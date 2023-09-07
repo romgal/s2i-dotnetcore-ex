@@ -1,5 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json").AddJsonFile("appsettings.secrets.json");
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

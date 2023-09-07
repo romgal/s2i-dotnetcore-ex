@@ -1,8 +1,26 @@
-﻿@{
+﻿@using Npgsql
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+        var cs=$"Host={Configuration["DBServer"]};Username={Configuration["DBUser"]};Password={Configuration["DBPassword"]};Database={Configuration["DBName"]}";
+        using var con = new NpgsqlConnection(cs);
+        con.Open();
+        var sql="SELECT * from public.\"HelloWorld\"";
+        using var cmd=new NpgsqlCommand(sql,con);
+        using NpgsqlDataReader rdr=cmd.ExecuteReader();
+    }
+    <center><table border="1">
+    @while(rdr.Read())
+    {
+           <tr><td>@rdr.GetString(0)</td><td>@rdr.GetString(1)</td></tr>
+    }
+    </table></center>
 </div>
